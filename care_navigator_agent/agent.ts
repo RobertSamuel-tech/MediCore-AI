@@ -1,35 +1,51 @@
-/**
- * Care Navigator agent — ADK agent definition.
- *
- * Guides patients through care pathways, coordinates referrals, and manages
- * transitions of care across the MediCore platform.
- *
- * TODO: Add tools for care pathway lookup, referral management, and
- * community resource discovery.
- */
-
 import '../shared/env.js';
 
 import { LlmAgent } from '@google/adk';
 import { OpenRouterLlm } from '../shared/openRouterLlm.js';
-import { extractFhirContext } from '../shared/fhirHook.js';
 
 export const rootAgent = new LlmAgent({
     name: 'care_navigator_agent',
     model: new OpenRouterLlm(),
     description:
-        'Care Navigator agent — guides patients through care pathways, coordinates referrals, and manages transitions of care.',
-    instruction: `You are a care navigation specialist responsible for helping patients and
-clinical teams navigate complex care pathways.
+        'Care Navigator — identifies appropriate care pathways, coordinates specialist referrals, ' +
+        'and manages care transitions based on the clinical query.',
+    instruction: `You are a care navigation specialist for the MediCore platform.
 
-Your responsibilities include:
-  • Identifying appropriate care pathways based on patient conditions
-  • Coordinating referrals to specialist services
-  • Managing care transitions between settings (hospital, outpatient, home)
-  • Connecting patients with community resources and support services
-  • Monitoring care plan adherence and flagging gaps
+Given a clinical query, identify the appropriate care pathway and coordination steps.
+No external data systems required — work from the information in the request.
 
-If FHIR credentials are not available in the current session, tell the caller that
-FHIR context must be provided in the request metadata.`,
-    beforeModelCallback: extractFhirContext,
+════════════════════════════════════════════════════════════
+ RESPONSE FORMAT
+════════════════════════════════════════════════════════════
+
+CARE PATHWAY:
+  Recommended care setting (primary care, specialist, ED, urgent care, telehealth).
+  Rationale based on the clinical presentation.
+
+SPECIALIST REFERRALS:
+  List any specialist referrals needed (cardiology, endocrinology, etc.).
+  Priority: URGENT | ROUTINE.
+
+CARE TRANSITIONS:
+  Any transitions needed (hospital to home, inpatient to outpatient, etc.).
+  Coordination requirements.
+
+CARE COORDINATION ACTIONS:
+  Specific steps for the care team:
+  • Schedule follow-up appointments
+  • Notify relevant providers
+  • Community resource connections
+  • Care team communication
+
+PATIENT NAVIGATION SUPPORT:
+  How to guide the patient through the next steps.
+  Education, support services, or advocacy needed.
+
+════════════════════════════════════════════════════════════
+ RULES
+════════════════════════════════════════════════════════════
+
+  • Always provide actionable care pathway guidance.
+  • Flag urgent referrals prominently.
+  • Be concise and structured for the orchestrator to consume.`,
 });

@@ -21,11 +21,16 @@
         "treatment_planner_agent/**/*.ts",
         "insurance_billing_agent/**/*.ts",
         "followup_adherence_agent/**/*.ts",
-        "health_memory_agent/**/*.ts",
         "orchestrator/**/*.ts"
     ],
     "exclude": [
         "node_modules",
-        "dist"
+        "dist",
+        "shared/fhirHook.ts",
+        "shared/fhirService.ts",
+        "shared/medplumClient.ts",
+        "shared/tools/fhir.ts",
+        "shared/middleware.ts",
+        "health_memory_agent/**"
     ]
 }

@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "dev": "concurrently -c \"blue,green,yellow\" -n \"diagnosis,intake,orchestrator\" \"npx tsx diagnosis_agent/server.ts\" \"npx tsx intake_agent/server.ts\" \"npx tsx orchestrator/server.ts\"",
-    "dev:all": "concurrently -c \"blue,green,yellow,cyan,magenta,red,white,gray,bold\" -n \"diagnosis,intake,orchestrator,navigator,treatment,billing,followup,memory,social\" \"npx tsx diagnosis_agent/server.ts\" \"npx tsx intake_agent/server.ts\" \"npx tsx orchestrator/server.ts\" \"npx tsx care_navigator_agent/server.ts\" \"npx tsx treatment_planner_agent/server.ts\" \"npx tsx insurance_billing_agent/server.ts\" \"npx tsx followup_adherence_agent/server.ts\" \"npx tsx health_memory_agent/server.ts\" \"npx tsx social_barrier_agent/server.ts\"",
+    "dev:all": "concurrently -c \"blue,green,yellow,cyan,magenta,red,white,bold\" -n \"diagnosis,intake,orchestrator,navigator,treatment,billing,followup,social\" \"npx tsx diagnosis_agent/server.ts\" \"npx tsx intake_agent/server.ts\" \"npx tsx orchestrator/server.ts\" \"npx tsx care_navigator_agent/server.ts\" \"npx tsx treatment_planner_agent/server.ts\" \"npx tsx insurance_billing_agent/server.ts\" \"npx tsx followup_adherence_agent/server.ts\" \"npx tsx social_barrier_agent/server.ts\"",
     "dev:diagnosis": "npx tsx diagnosis_agent/server.ts",
     "dev:intake": "npx tsx intake_agent/server.ts",
     "dev:orchestrator": "npx tsx orchestrator/server.ts",
@@ -15,7 +15,6 @@
     "dev:treatment-planner": "npx tsx treatment_planner_agent/server.ts",
     "dev:insurance-billing": "npx tsx insurance_billing_agent/server.ts",
     "dev:followup-adherence": "npx tsx followup_adherence_agent/server.ts",
-    "dev:health-memory": "npx tsx health_memory_agent/server.ts",
     "dev:social-barrier": "npx tsx social_barrier_agent/server.ts",
     "start:diagnosis": "node dist/diagnosis_agent/server.js",
     "start:intake": "node dist/intake_agent/server.js",
@@ -24,7 +23,6 @@
     "start:treatment-planner": "node dist/treatment_planner_agent/server.js",
     "start:insurance-billing": "node dist/insurance_billing_agent/server.js",
     "start:followup-adherence": "node dist/followup_adherence_agent/server.js",
-    "start:health-memory": "node dist/health_memory_agent/server.js",
     "start:social-barrier": "node dist/social_barrier_agent/server.js",
     "adk:web": "npm run build && npx adk web dist",
     "adk:run": "npm run build && npx adk run dist"

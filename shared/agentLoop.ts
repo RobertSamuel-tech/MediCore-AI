@@ -82,6 +82,10 @@ function mockCtx(state: Map<string, unknown>) {
 // ── Core loop ──────────────────────────────────────────────────────────────────
 
 const MAX_ITER = 15;
+// 5 s hard cap per LLM call.
+// The orchestrator sets responseTimeoutMs = 7 s, so a 5 s LLM abort +
+// fallback write easily fits within Prompt Opinion's 8–10 s budget.
+const LLM_CALL_TIMEOUT_MS = 5_000;
 
 export async function runAgentLoop(
     client: OpenAI,
@@ -118,19 +122,33 @@ export async function runAgentLoop(
     for (let i = 0; i < MAX_ITER; i++) {
         let completion: OpenAI.Chat.Completions.ChatCompletion;
         try {
-            completion = await client.chat.completions.create({
-                model,
-                messages,
-                tools:       tools.length ? tools : undefined,
-                tool_choice: tools.length ? 'auto' : undefined,
-                temperature: 0.1,
-                max_tokens:  8192,
-            });
+            const controller = new AbortController();
+            const llmTimer   = setTimeout(() => controller.abort(), LLM_CALL_TIMEOUT_MS);
+            try {
+                completion = await client.chat.completions.create(
+                    {
+                        model,
+                        messages,
+                        tools:       tools.length ? tools : undefined,
+                        tool_choice: tools.length ? 'auto' : undefined,
+                        temperature: 0.1,
+                        max_tokens:  8192,
+                    },
+                    { signal: controller.signal },
+                );
+            } finally {
+                clearTimeout(llmTimer);
+            }
         } catch (err: unknown) {
             const msg = err instanceof Error ? err.message : String(err);
             console.error(`[agentLoop] API error agent=${agent.name} iter=${i}: ${msg}`);
             if (msg.includes('429') || msg.toLowerCase().includes('rate limit')) {
                 return 'I am temporarily unavailable due to API rate limiting. Please retry in a moment.';
+            }
+            // AbortError from our timeout — surface as a clean message so the
+            // outer 7 s response timeout can return it gracefully.
+            if (err instanceof Error && err.name === 'AbortError') {
+                throw new Error(`LLM call timed out after ${LLM_CALL_TIMEOUT_MS}ms — OpenRouter is slow, please retry`);
             }
             throw err;
         }
@@ -179,7 +197,7 @@ export async function runAgentLoop(
                         }
                     } else {
                         console.warn(`[agentLoop] tool "${toolName}" not found in ${agent.name}`);
-                        result = { error: `Tool ${toolName} not found` };
+                        result = { status: 'error', agent: toolName, reason: `Tool ${toolName} not found`, fallback: `${toolName} is not available — skip and continue.` };
                     }
 
                     return {

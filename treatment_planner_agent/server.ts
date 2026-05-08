@@ -18,23 +18,18 @@ import { rootAgent } from './agent.js';
 const PORT = Number(process.env['PORT'] ?? 8005);
 const URL = process.env['TREATMENT_PLANNER_AGENT_URL'] ?? `http://localhost:${PORT}`;
 
-const FHIR_EXTENSION = process.env['FHIR_EXTENSION_URI'] ?? 'http://localhost:5139/schemas/a2a/v1/fhir-context';
-
 const app = createA2aApp({
     agent: rootAgent,
     name: 'treatment_planner_agent',
-    description: (
-        'A clinical treatment planning specialist that generates evidence-based treatment plans ' +
-        'aligned with clinical guidelines and patient FHIR data.'
-    ),
+    description:
+        'Treatment Planner — generates evidence-based treatment plans aligned with clinical ' +
+        'guidelines (AHA, ADA, USPSTF) based on the clinical query.',
     url: URL,
     version: '1.0.0',
-    fhirExtensionUri: FHIR_EXTENSION,
-    requireApiKey: true,
 });
 
 app.listen(PORT, () => {
-    console.info(`treatment_planner_agent running on port ${PORT}`);
-    console.info(`Agent card: GET http://localhost:${PORT}/.well-known/agent-card.json`);
-    console.info(`A2A endpoint: POST http://localhost:${PORT}/  (X-API-Key required)`);
+    console.info(`[treatment_planner_agent] port=${PORT}`);
+    console.info(`[treatment_planner_agent] card: GET http://localhost:${PORT}/.well-known/agent-card.json`);
+    console.info(`[treatment_planner_agent] A2A:  POST http://localhost:${PORT}/`);
 });

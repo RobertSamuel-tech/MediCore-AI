@@ -1,21 +1,28 @@
-# ── Prompt Opinion ADK Agent (TypeScript) — Cloud Run container ──────────────
+# ── MediCore AI (TypeScript) — Multi-stage container ─────────────────────────
 #
-# This single Dockerfile builds all three agents from the same image.
-# The AGENT_MODULE env var selects which agent to start at runtime.
+# One image, any agent. AGENT_MODULE selects which server to start at runtime.
 #
-# Local build + test:
-#   docker build -t po-adk-ts .
-#   docker run --rm -p 8080:8080 \
-#     -e AGENT_MODULE=general_agent \
-#     -e GOOGLE_API_KEY=your-key-here \
-#     -e GOOGLE_GENAI_USE_VERTEXAI=FALSE \
-#     po-adk-ts
+# Available modules:
+#   orchestrator              → port 8003  (primary entry point)
+#   intake_agent              → port 8002
+#   diagnosis_agent           → port 8001
+#   care_navigator_agent      → port 8004
+#   treatment_planner_agent   → port 8005
+#   insurance_billing_agent   → port 8006
+#   followup_adherence_agent  → port 8007
+#   health_memory_agent       → port 8008
+#   social_barrier_agent      → port 8009
 #
-# Cloud Run deployment:
-#   gcloud run deploy general-agent \
-#     --source . \
-#     --set-env-vars "AGENT_MODULE=general_agent,GOOGLE_GENAI_USE_VERTEXAI=FALSE" \
-#     --set-secrets "GOOGLE_API_KEY=google-api-key:latest" ...
+# Local build + run:
+#   docker build -t medicore-ai .
+#   docker run --rm -p 8003:8003 \
+#     -e AGENT_MODULE=orchestrator \
+#     -e OPENROUTER_API_KEY=sk-or-v1-... \
+#     -e ORCHESTRATOR_URL=https://<ngrok>.ngrok-free.app \
+#     medicore-ai
+#
+# Full stack (docker compose):
+#   docker compose up --build
 
 FROM node:20-slim AS builder
 
@@ -43,10 +50,7 @@ COPY --from=builder /app/dist ./dist
 # Cloud Run sets PORT=8080; default to 8080 for local Docker testing.
 ENV PORT=8080
 
-# Which agent to serve:
-#   general_agent      → dist/general_agent/server.js     (public, no key)
-#   healthcare_agent   → dist/healthcare_agent/server.js  (X-API-Key required)
-#   orchestrator       → dist/orchestrator/server.js      (X-API-Key required)
-ENV AGENT_MODULE=general_agent
+# Which agent to serve. Default: orchestrator (main entry point).
+ENV AGENT_MODULE=orchestrator
 
 CMD ["sh", "-c", "node dist/${AGENT_MODULE}/server.js"]
