@@ -441,6 +441,22 @@ For production, consider calling specialist agents in parallel where clinically 
 
 ---
 
+## Example prompts
+
+1 John Demo-001 (DOB: 1970-01-01) reports chest tightness, dizziness, fatigue, and mild shortness of breath for the last 2 days. Collect and summarize the patient intake information and identify key risk factors.
+
+2 John Demo-001 (DOB: 1970-01-01) has uncontrolled diabetes, hypertension, and repeated dizziness episodes. Generate a treatment and monitoring plan considering safety and long-term management.
+
+3 John Demo-001 (DOB: 1970-01-01) cannot afford insulin refills and insurance denied prior authorization for diabetes medication. Analyze affordability barriers and possible billing or coverage support options.
+
+4 John Demo-001 (DOB: 1970-01-01) missed three follow-up appointments after hospital discharge and frequently forgets medications. Assess adherence risks and generate a follow-up intervention strategy.
+
+5 John Demo-001 (DOB: 1970-01-01) needs cardiology follow-up, diabetes management, transportation assistance, and financial support resources. Coordinate the next steps of care navigation.
+
+6 John Demo-001 (DOB: 1970-01-01) is a 55-year-old diabetic patient with chest pain, dizziness, medication non-adherence due to financial barriers, repeated missed follow-ups, and worsening fatigue after recent hospital discharge. Perform a complete multi-agent assessment including intake, diagnosis, longitudinal memory, treatment planning, affordability analysis, adherence risk evaluation, and coordinate care navigation.
+
+---
+
 ## License
 
 MIT
