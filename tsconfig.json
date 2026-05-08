@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "outDir": "./dist",
+        "rootDir": "./",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "verbatimModuleSyntax": false
+    },
+    "include": [
+        "shared/**/*.ts",
+        "intake_agent/**/*.ts",
+        "diagnosis_agent/**/*.ts",
+        "care_navigator_agent/**/*.ts",
+        "treatment_planner_agent/**/*.ts",
+        "insurance_billing_agent/**/*.ts",
+        "followup_adherence_agent/**/*.ts",
+        "health_memory_agent/**/*.ts",
+        "orchestrator/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}
